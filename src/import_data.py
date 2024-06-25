@@ -9,7 +9,7 @@ def import_data(list_files, schema):
     return cleaned_df
 
 
-def import_aiport_data(list_files):
+def import_airport_data(list_files):
     col_types = {
         "ANMOIS": "str",
         "APT": "str",
