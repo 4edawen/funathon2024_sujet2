@@ -1,5 +1,6 @@
 import yaml
 
+
 def create_data_list(source_file):
     """
     Reads a YAML file and returns the contents as a dictionary.
