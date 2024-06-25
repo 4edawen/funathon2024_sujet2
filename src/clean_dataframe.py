@@ -1,14 +1,12 @@
-import pandas as pd
-
-
-def extract_month_year(row):
-    row['an'] = row['ANMOIS'][:4]
-    row['mois'] = str(int(row['ANMOIS'][4:]))
-    return row['an'], row['mois']
-
-
 def clean_dataframe(df):
-    df['an'], df['mois'] = df.apply(extract_month_year, axis=1, result_type='expand')[0],
-    df.apply(extract_month_year, axis=1, result_type='expand')[1]
-    df.columns = map(str.lower, df.columns)
+    # Create 'an' and 'mois' columns
+    df['an'] = df['ANMOIS'].astype(str).str[:4]
+    df['mois'] = df['ANMOIS'].astype(str).str[-2:]
+
+    # Remove leading zeros from 'mois' column
+    df['mois'] = df['mois'].str.replace(r'^0+', '', regex=True)
+
+    # Convert all column names to lowercase
+    df.columns = df.columns.str.lower()
+
     return df
