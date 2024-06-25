@@ -2,8 +2,7 @@ import pandas as pd
 
 
 def summary_stat_airport(dataframe):
-    cols = ["apt", "traffic", "apt_pax_dep", "apt_pax_arr", "apt_pax_tr"]
-    return dataframe[cols].groupby("apt").sum().sort_values("traffic", ascending=False).reset_index()
+    return dataframe.groupby("apt").agg({"apt_nom": "first", "apt_pax_dep": "sum", "apt_pax_arr": "sum", "apt_pax_tr": "sum", "traffic": "sum"}).sort_values("traffic", ascending=False).reset_index()
 
 
 def create_data_from_input(dataframe, year, month):
