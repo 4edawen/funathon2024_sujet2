@@ -34,7 +34,6 @@ def map_leaflet_airport(dataframe, airports_location, month, year):
     trafic_date['volume'] = pd.qcut(x=trafic_date.traffic, q=3, labels=[1, 2, 3])
     trafic_aeroports = airports_location.merge(
         trafic_date,
-        how='inner',
         left_on='Code.OACI',
         right_on='apt',
         suffixes=["_x", ""])
@@ -43,11 +42,13 @@ def map_leaflet_airport(dataframe, airports_location, month, year):
 
     map = folium.Map()
 
-    for idx, row in trafic_aeroports.iterrows():
+    for idx, row in trafic_aeroports[
+            (trafic_aeroports["an"] == year) &
+            (trafic_aeroports["mois"] == month)].iterrows():
         coord = row['geometry']
         name = row['Nom']
         code_oaci = row['Code.OACI']
-        trafic = int(row['trafic'])
+        trafic = int(row['traffic'])
         color = row['palette']
         popup_content = f"{name} ({code_oaci}) : {trafic} voyageurs"
         folium.Marker(
