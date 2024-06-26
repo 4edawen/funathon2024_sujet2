@@ -1,4 +1,8 @@
 import geopandas as gpd
+import pandas as pd
+import streamlit as st
+import streamlit.components.v1 as components
+from streamlit_folium import st_folium
 
 import src.import_data as sid
 from src.create_data_list import create_data_list
@@ -30,10 +34,15 @@ pax_apt_all["traffic"] = pax_apt_all["apt_pax_dep"] + \
     pax_apt_all["apt_pax_arr"]
 stats_aeroports = summary_stat_airport(create_data_from_input(pax_apt_all, year, month))
 
-# Valorisation --
+# Streamlit Layout --
 
-figure_plotly = plot_airport_line(pax_apt_all, default_airport)
+st.set_page_config(
+  page_title="Tableau de bord des aéroports français", layout="wide",
+  page_icon="✈️"
+  )
+col1, col2 = st.columns(2)
 
-table_airports = create_table_airports(stats_aeroports)
+selected_date = st.date_input(label="Mois Choisi", value=pd.to_datetime("2019-01-01"))
+selected_date
 
-carte_interactive = map_leaflet_airport(pax_apt_all, airports_location, month, year)
+
