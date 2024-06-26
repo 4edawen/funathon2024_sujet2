@@ -1,5 +1,7 @@
 import plotly.express as px
 import pandas as pd
+import folium
+from src.divers_functions import create_data_from_input
 
 
 def traffic_airport(dataframe, airport):
@@ -21,3 +23,36 @@ def plot_airport_line(dataframe, airport):
         hovertemplate="<i>Aéroport:</i> %{text}<br>Trafic: %{y}"
     )
     return fig
+
+
+def map_leaflet_airport(dataframe, airports_location, month, year):
+    palette = ['green', 'orange', 'red']
+
+    trafic_date = create_data_from_input(dataframe, year, month)
+    pd.options.mode.copy_on_write = True
+    trafic_date['volume'] = pd.qcut(x=trafic_date.traffic, q=3, labels=[1, 2, 3])
+    trafic_aeroports = pd.merge(
+        airports_location,
+        trafic_date,
+        how='left',
+        left_on='Code.OACI',
+        right_on='apt',
+        suffixes=["_x", ""])
+    trafic_aeroports['palette'] = trafic_aeroports['volume'].apply(lambda x: palette[x-1])
+
+    map = folium.Map()
+
+    for idx, row in trafic_aeroports.iterrows():
+        coord = row['geometry']
+        name = row['Nom']
+        code_oaci = row['Code.OACI']
+        trafic = int(row['trafic'])
+        color = row['palette']
+        popup_content = f"{name} ({code_oaci}) : {trafic} voyageurs"
+        folium.Marker(
+            location=[coord.y, coord.x],
+            popup=folium.Popup(popup_content, parse_html=True),
+            icon=folium.Icon(icon="send", color=color)
+            ).add_to(map)
+
+    return map

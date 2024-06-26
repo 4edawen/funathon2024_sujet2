@@ -2,7 +2,7 @@ import geopandas as gpd
 
 import src.import_data as sid
 from src.create_data_list import create_data_list
-from src.figures import plot_airport_line
+from src.figures import plot_airport_line, map_leaflet_airport
 from src.divers_functions import summary_stat_airport, create_data_from_input
 from src.tables import create_table_airports
 
@@ -35,3 +35,5 @@ stats_aeroports = summary_stat_airport(create_data_from_input(pax_apt_all, year,
 figure_plotly = plot_airport_line(pax_apt_all, default_airport)
 
 table_airports = create_table_airports(stats_aeroports)
+
+carte_interactive = map_leaflet_airport(pax_apt_all, airports_location, month, year)
