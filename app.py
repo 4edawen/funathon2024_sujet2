@@ -32,7 +32,7 @@ default_airport = liste_aeroports[0]
 pax_apt_all["traffic"] = pax_apt_all["apt_pax_dep"] + \
     pax_apt_all["apt_pax_tr"] + \
     pax_apt_all["apt_pax_arr"]
-stats_aeroports = summary_stat_airport(create_data_from_input(pax_apt_all, year, month))
+
 
 # Streamlit Layout --
 
@@ -42,5 +42,22 @@ st.set_page_config(
   )
 col1, col2 = st.columns(2)
 
-selected_date = st.date_input(label="Mois Choisi", value=pd.to_datetime("2019-01-01"))
-selected_date
+selected_date = col1.date_input(
+    "Mois choisi",
+    pd.to_datetime("2019-01-01"),
+    min_value=pd.to_datetime("2018-01-01"),
+    max_value=pd.to_datetime("2022-12-01")
+  )
+year = selected_date.year
+month = selected_date.month
+
+stats_aeroports = summary_stat_airport(create_data_from_input(pax_apt_all, year, month))
+
+table_airports = (
+  create_table_airports(stats_aeroports)
+  .as_raw_html()
+)
+
+with col1:
+    components.html(table_airports, height=600)
+
