@@ -28,16 +28,17 @@ def plot_airport_line(dataframe, airport):
 def map_leaflet_airport(dataframe, airports_location, month, year):
     palette = ['green', 'orange', 'red']
 
-    trafic_date = create_data_from_input(dataframe, year, month)
+    dataframe['date'] = pd.to_datetime(dataframe['anmois'] + '01', format='%Y%m%d')
     pd.options.mode.copy_on_write = True
+    trafic_date = create_data_from_input(dataframe, year, month)
     trafic_date['volume'] = pd.qcut(x=trafic_date.traffic, q=3, labels=[1, 2, 3])
-    trafic_aeroports = pd.merge(
-        airports_location,
+    trafic_aeroports = airports_location.merge(
         trafic_date,
-        how='left',
+        how='inner',
         left_on='Code.OACI',
         right_on='apt',
         suffixes=["_x", ""])
+    trafic_aeroports['date'] = trafic_aeroports['date'].dt.strftime('%Y-%m-%d')
     trafic_aeroports['palette'] = trafic_aeroports['volume'].apply(lambda x: palette[x-1])
 
     map = folium.Map()

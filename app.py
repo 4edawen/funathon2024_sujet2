@@ -44,5 +44,3 @@ col1, col2 = st.columns(2)
 
 selected_date = st.date_input(label="Mois Choisi", value=pd.to_datetime("2019-01-01"))
 selected_date
-
-
